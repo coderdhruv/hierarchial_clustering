@@ -110,30 +110,6 @@ for i in range(0,len(data)-1):
         list2.append(groups[b])
         list_val.append(min_value)
 
-        """if len(groups[a]) == 1 and len(groups[b]) == 1:
-            tmpZ[ptr][0] = a
-            tmpZ[ptr][1] = b
-            tmpZ[ptr][2] = min_value
-            ptr = ptr + 1
-        elif len(groups[a]) != 1 and len(groups[b]) == 1:
-            tmpZ[ptr][0] = g1
-            tmpZ[ptr][1] = b
-            tmpZ[ptr][2] = min_value
-            ptr = ptr + 1
-            g1 = g1 + 1
-        elif len(groups[a]) == 1 and len(groups[b]) != 1:
-            print("value g", g1)
-            tmpZ[ptr][0] = a
-            tmpZ[ptr][1] = g1
-            tmpZ[ptr][2] = min_value
-            ptr = ptr + 1
-            g1 = g1 + 1
-        else:
-            tmpZ[ptr][0] = g1
-            tmpZ[ptr][1] = g1+1
-            tmpZ[ptr][2] = min_value
-            ptr = ptr + 1
-            g1 = g1 + 2"""
         clusters = list()
         clusters = list(set(groups[a]) | set(groups[b]))
         groups[a] = clusters
@@ -247,7 +223,7 @@ for i in range(0, len(final)):
 print(list1, "printing 1 again")
 print(list2, "printing 2 again")
 print(list_val, "printing distance again")
-
+names = [data[i][0] for i in range(0, len(data))]
 # Plot dendrogram
 names = [i for i in range(0, len(data))]
 plt.figure(figsize=(25, 25))
