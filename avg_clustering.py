@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import plotly
 import scipy.cluster.hierarchy as sch
 
+"""function to find the minimum element indexes 
+among all the elements in the proximity matrix"""
 
 def find_minimum(mat, n):
     mini = 100000
@@ -27,6 +29,8 @@ def find_minimum(mat, n):
                     h2 = j
     return h1, h2, mini
 
+"""function to find the find the average distance between two data points
+(they could be in combined form or in singular form)"""
 
 def avg_dist_calculate(y, z, matrix):
     r = len(y)*len(z)
@@ -38,7 +42,7 @@ def avg_dist_calculate(y, z, matrix):
     return avg
 
 
-
+"""function to draw the dendrogram"""
 
 def augmented_dendrogram(*args, **kwargs):
         data = scipy.cluster.hierarchy.dendrogram(*args, **kwargs)
@@ -54,6 +58,9 @@ def augmented_dendrogram(*args, **kwargs):
 s = input()
 data = list()
 d = dict()
+
+""" code to open and write data to a np array initialised with zeroes """
+
 with open(s,'r') as f:
     s = ""
     head = ""
@@ -69,12 +76,16 @@ with open(s,'r') as f:
             s = ""
             count +=  1
         else:
-            s = s+string
+            s = s+string[:-1]
     data.append((head,s,count))
     d[head] = s
 
 dist1 = np.zeros(shape=(len(data), len(data)))
 finalArray = np.zeros(shape=(len(data), len(data)))
+
+"""code to fill the abovementioned array with levenstein distance values
+   and hence making our distance matrix"""
+
 
 for i in range(0, len(data)):
     for j in range(0, len(data)):
@@ -98,13 +109,22 @@ for i in range(0, len(data)):
     global_cluster.append(i)
     groups[i] = cluster_id
 #print(dist1)
+
 for i in range(0,len(data)-1):
+
+    """ for loop to check whether all the points in the proximity matrix 
+            are filled with 9999 or not"""
+
     for h in range(0,len(data)):
         for g in range(0,len(data)):
             if dist1[h][g] != 9999 :
                 flag = 1
                 break
     if flag == 1:
+
+        """updating value of dictionary groups(meant for combining elements) and 
+            storing their value as key"""
+
         a, b, min_value = find_minimum(dist1, len(data))
         print("a:", a, "b:", b)
         list1.append(groups[a]);
@@ -118,19 +138,24 @@ for i in range(0,len(data)-1):
         for j in range(0, len(data)):
             dist1[j][groups[b][groups[b].index(min(groups[b]))]] = 9999
             dist1[groups[b][groups[b].index(min(groups[b]))]][j] = 9999
+
+        """updating the proximity matrix"""
+
         for j in range(0, len(data)):
             for k in range(0, len(data)):
                 if dist1[j][k] != 9999 and j != k:
                     dist1[j][k] = avg_dist_calculate(groups[j], groups[k], finalArray)
         flag = 0
-        #print(tmpZ)
-        #print(dist1, "distane matrix")
     else:
         break
 n = len(data)
-print(list1,"printing 1")
-print(list2,"printing 2")
-print(list_val,"printing distance")
+print(list1, "printing 1")
+print(list2, "printing 2")
+print(list_val, "printing distance")
+
+"""forming final linkage-matrix for plotting dendrogram"""
+"""sorting the combining values on the basis of length"""
+
 for i in range(0, len(list1)):
     for j in range(i+1, len(list1)):
         sum_i = len(list1[i]) + len(list2[i])
@@ -142,6 +167,9 @@ for i in range(0, len(list1)):
 print("list1=\n", list1, "list2=\n", list2, "list_val=\n", list_val)
 
 final = []
+
+"""combining and filling values for linkage matrix"""
+
 for i in range(0, len(list1)):
     if len(list1[i]) == 1 and len(list2[i]) == 1:
         t = []
@@ -225,11 +253,12 @@ print(list1, "printing 1 again")
 print(list2, "printing 2 again")
 print(list_val, "printing distance again")
 
-# Plot dendrogram
+""" Plot dendrogram using values of final_numpy array"""
+
 names = [i for i in range(0, len(data))]
 plt.figure(figsize=(25, 25))
 plt.title('Hierarchical Clustering Dendrogram (Agglomerative)')
 plt.xlabel('Sequence No.')
 plt.ylabel('Distance')
-augmented_dendrogram(final_numpy, labels=names, show_leaf_counts=True, p=300, truncate_mode='lastp')
+augmented_dendrogram(final_numpy, labels=names, show_leaf_counts=True, p=40, truncate_mode='lastp')
 plt.show()

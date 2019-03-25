@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import plotly
 import scipy.cluster.hierarchy as sch
 
+"""function to find the maximum element indexes 
+among all the elements in the proximity matrix"""
 def find_maximum(mat, n):
     maxi = 0
     h1 = 0
@@ -28,6 +30,8 @@ def find_maximum(mat, n):
 
     return h1, h2, maxi
 
+"""function to find the find the maximum distance between two data points
+(they could be in combined form or in singular form)"""
 
 def max_dist_calculate(y, z, matrix):
     maxim = 0
@@ -38,6 +42,7 @@ def max_dist_calculate(y, z, matrix):
     return maxim
 
 
+"""function to draw the dendrogram"""
 
 def augmented_dendrogram(*args, **kwargs):
         data = scipy.cluster.hierarchy.dendrogram(*args, **kwargs)
@@ -53,6 +58,9 @@ def augmented_dendrogram(*args, **kwargs):
 s = input()
 data = list()
 d = dict()
+
+""" code to open and write data to a np array initialised with zeroes """
+
 with open(s, 'r') as f:
     s = ""
     head = ""
@@ -68,12 +76,15 @@ with open(s, 'r') as f:
             s = ""
             count +=  1
         else:
-            s = s+string
-    data.append((head,s,count))
+            s = s+string[:-1]
+    data.append((head, s, count))
     d[head] = s
 
 dist1 = np.zeros(shape=(len(data), len(data)))
 finalArray = np.zeros(shape=(len(data), len(data)))
+
+"""code to fill the abovementioned array with levenstein distance values
+   and hence making our distance matrix"""
 
 for i in range(0, len(data)):
     for j in range(0, len(data)):
@@ -98,12 +109,20 @@ for i in range(0, len(data)):
     groups[i] = cluster_id
 #print(dist1)
 for i in range(0,len(data)-1):
+
+    """ for loop to check whether all the points in the proximity matrix 
+        are filled with 9999 or not"""
+
     for h in range(0,len(data)):
         for g in range(0,len(data)):
             if dist1[h][g] != 9999 :
                 flag = 1
                 break
     if flag == 1:
+
+        """updating value of dictionary groups(meant for combining elements) and 
+                storing their value as key"""
+
         a, b, min_value = find_maximum(dist1, len(data))
         print("a:", a, "b:", b)
         list1.append(groups[a]);
@@ -131,6 +150,10 @@ n = len(data)
 print(list1,"printing 1")
 print(list2,"printing 2")
 print(list_val,"printing distance")
+
+"""forming final linkage-matrix for plotting dendrogram"""
+"""sorting the combining values on the basis of length"""
+
 for i in range(0, len(list1)):
     for j in range(i+1, len(list1)):
         sum_i = len(list1[i]) + len(list2[i])
@@ -140,6 +163,8 @@ for i in range(0, len(list1)):
 
 
 print("list1=\n", list1, "list2=\n", list2, "list_val=\n", list_val)
+
+"""combining and filling values for linkage matrix"""
 
 final = []
 for i in range(0, len(list1)):
@@ -224,7 +249,9 @@ print(list1, "printing 1 again")
 print(list2, "printing 2 again")
 print(list_val, "printing distance again")
 names = [data[i][0] for i in range(0, len(data))]
-# Plot dendrogram
+
+""" Plot dendrogram using values of final_numpy array"""
+
 names = [i for i in range(0, len(data))]
 plt.figure(figsize=(25, 25))
 plt.title('Hierarchical Clustering Dendrogram (Agglomerative)')
